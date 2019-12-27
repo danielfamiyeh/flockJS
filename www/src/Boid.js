@@ -53,7 +53,6 @@ export default class Boid
             (fill) ? ctx.fillRect(this.position.x, this.position.y, 2*this.size, this.size) :
                 ctx.strokeRect(this.position.x, this.position.y, 2*this.size, this.size);
         }
-
         ctx.restore();
     }
 
@@ -63,6 +62,17 @@ export default class Boid
         this.velocity.limit(this.maxSpeed);
         this.position.add(Vector.VecScale(this.velocity, 1/this.mass));
         this.acceleration.scale(0);
+    }
+
+    wander()
+    {
+        let wanderAngle = Math.round(Math.random() * 360);
+        wanderAngle *= Math.PI/180;
+        let newX = this.position.x + 200 * Math.cos(wanderAngle),
+            newY = this.position.y + 200 * Math.sin(wanderAngle);
+        let t = new Vector(newX, newY);
+
+        this.seek(t);
     }
 
     seek(target)
@@ -79,6 +89,29 @@ export default class Boid
             else
             {
                 desired.scale(distance*0.02);
+            }
+
+            let steerForce = Vector.VecSub(desired, this.velocity);
+            steerForce.limit(this.maxSteer);
+            this.addForce(steerForce);
+        }
+    }
+    
+    flee(target)
+    {
+        if(target.x != null && target.y != null)
+        {
+            let desired = Vector.VecSub(target, this.position),
+                distance = desired.mag;
+                desired.normalise();
+                desired.scale(-1);
+            if(distance<100)
+            {
+                desired.scale(this.maxSpeed);
+            }
+            else
+            {
+                desired.scale(0);
             }
 
             let steerForce = Vector.VecSub(desired, this.velocity);

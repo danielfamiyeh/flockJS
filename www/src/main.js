@@ -17,15 +17,15 @@ let shapes = {
     RECTANGLE : "rectangle"
 }
 
-let shapeArr = [shapes.CIRCLE, shapes.SQUARE, shapes.TRIANGLE, shapes.RECTANGLE];
+let shapeArr = [shapes.CIRCLE, shapes.SQUARE, shapes.TRIANGLE, shapes.RECTANGLE],
+    count = 0;
 
 let target = new Vector(null, null);
 document.addEventListener("click", function(e){
     target = new Vector(e.clientX, e.clientY);
 });
 
-let boid = new Boid(WIDTH/2, HEIGHT/2,0.7);
-console.log((boid.heading.y/boid.heading.x)*180/Math.PI);
+let boid = new Boid(WIDTH/2, HEIGHT/2,0.3);
 
 function render()
 {
@@ -35,8 +35,16 @@ function render()
 
 function update()
 {
-    boid.seek(target);
+  //  boid.seek(target)
+    if(count % 100 === 0)
+    {
+        boid.wander();   
+    }
+    
+
     boid.update();
+
+    count++;
 }
 
 function main()
