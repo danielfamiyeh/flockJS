@@ -37,7 +37,7 @@ export default class Boid
         if(shape===this.shape.TRIANGLE)
         {
             ctx.beginPath();
-            ctx.moveTo(this.position.x + this.size, this.position.y + this.size/2);
+            ctx.moveTo(this.position.x + 4*this.size, this.position.y + this.size/2);
             ctx.lineTo(this.position.x, this.position.y - this.size);
             ctx.lineTo(this.position.x, this.position.y + 2*this.size);
 

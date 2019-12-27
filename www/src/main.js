@@ -15,13 +15,13 @@ let shapes = {
     TRIANGLE : "triangle"
 }
 
-let boid = new Boid(WIDTH/2, HEIGHT/2,3);
+let boid = new Boid(WIDTH/2, HEIGHT/2,1);
 console.log((boid.heading.y/boid.heading.x)*180/Math.PI);
 
 function render()
 {
     ctx.clearRect(0,0,WIDTH,HEIGHT);
-    boid.render(ctx,shapes.SQUARE,"white",false);
+    boid.render(ctx,shapes.TRIANGLE,"white",false);
 }
 
 function update()
