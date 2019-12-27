@@ -7,8 +7,9 @@ export default class Boid
     {
         this._position = new Vector(x,y);
         this._acceleration = new Vector(0,0);
-        this._velocity = new Vector(1,0);
+        this._velocity = new Vector(0,0);
         this._mass = mass;
+        this._size = 5*this.mass;
 
         this._shape = {
             CIRCLE : "circle",
@@ -21,7 +22,7 @@ export default class Boid
     {
         (fill) ? ctx.fillStyle = colour : ctx.strokeStyle = colour;
         ctx.save();
-        Tools.rotate(ctx, this, (this.heading.y/this.heading.x))
+        Tools.rotate(ctx, this, Math.atan2(this.velocity.y,this.velocity.x))
         if(shape===this.shape.CIRCLE)
         {
             ctx.beginPath();
@@ -33,6 +34,17 @@ export default class Boid
             (fill) ? ctx.fillRect(this.position.x, this.position.y, 5*this.mass, 5*this.mass) :
                     ctx.strokeRect(this.position.x, this.position.y, 5*this.mass, 5*this.mass);
         }
+        if(shape===this.shape.TRIANGLE)
+        {
+            ctx.beginPath();
+            ctx.moveTo(this.position.x + this.size, this.position.y + this.size/2);
+            ctx.lineTo(this.position.x, this.position.y - this.size);
+            ctx.lineTo(this.position.x, this.position.y + 2*this.size);
+
+            ctx.closePath();
+            (fill) ? ctx.fill() : ctx.stroke();
+        }
+
         ctx.restore();
     }
 
@@ -51,6 +63,11 @@ export default class Boid
     get mass()
     {
         return this._mass;
+    }
+
+    get size()
+    {
+        return this._size;
     }
 
     get position()

@@ -15,7 +15,7 @@ let shapes = {
     TRIANGLE : "triangle"
 }
 
-let boid = new Boid(WIDTH/2, HEIGHT/2,1);
+let boid = new Boid(WIDTH/2, HEIGHT/2,3);
 console.log((boid.heading.y/boid.heading.x)*180/Math.PI);
 
 function render()
