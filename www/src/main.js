@@ -41,7 +41,7 @@ function update()
         boid.wander();   
     }
     
-
+    boid.stayWithinWalls(WIDTH,HEIGHT);
     boid.update();
 
     count++;

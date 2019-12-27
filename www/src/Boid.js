@@ -75,6 +75,38 @@ export default class Boid
         this.seek(t);
     }
 
+    stayWithinWalls(WIDTH, HEIGHT)
+    {
+        if(this.position.x < 4*this.size)
+        {
+            let targetVec = new Vector(this.maxSpeed, this.velocity.y),
+                steer = Vector.VecSub(targetVec, this.velocity);
+                steer.limit(this.maxSteer);
+                this.addForce(steer);
+        }
+        if((WIDTH-this.position.x) < 4*this.size)
+        {
+            let targetVec = new Vector(-this.maxSpeed, this.velocity.y),
+                steer = Vector.VecSub(targetVec, this.velocity);
+                steer.limit(this.maxSteer);
+                this.addForce(steer);
+        }
+        if(this.position.y < 100)
+        {
+            let targetVec = new Vector(this.velocity.x, this.maxSpeed),
+                steer = Vector.VecSub(targetVec, this.velocity);
+                steer.limit(this.maxSteer);
+                this.addForce(steer);
+        }
+        if((HEIGHT-this.position.y) < 4*this.size)
+        { 
+            let targetVec = new Vector(this.velocity.x, -this.maxSpeed),
+                steer = Vector.VecSub(targetVec, this.velocity);
+                steer.limit(this.maxSteer);
+                this.addForce(steer);  
+        }
+    }
+
     seek(target)
     {
         if(target.x != null && target.y != null)
