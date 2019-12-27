@@ -1,4 +1,5 @@
 import Boid from './Boid.js';
+import Vector from './Vector.js';
 
 const WIDTH = 500,
     HEIGHT = 500;
@@ -12,10 +13,18 @@ ctx.canvas.height = HEIGHT;
 let shapes = {
     CIRCLE : "circle",
     SQUARE : "square",
-    TRIANGLE : "triangle"
+    TRIANGLE : "triangle",
+    RECTANGLE : "rectangle"
 }
 
-let boid = new Boid(WIDTH/2, HEIGHT/2,1);
+let shapeArr = [shapes.CIRCLE, shapes.SQUARE, shapes.TRIANGLE, shapes.RECTANGLE];
+
+let target = new Vector(null, null);
+document.addEventListener("click", function(e){
+    target = new Vector(e.clientX, e.clientY);
+});
+
+let boid = new Boid(WIDTH/2, HEIGHT/2,0.7);
 console.log((boid.heading.y/boid.heading.x)*180/Math.PI);
 
 function render()
@@ -26,6 +35,7 @@ function render()
 
 function update()
 {
+    boid.seek(target);
     boid.update();
 }
 

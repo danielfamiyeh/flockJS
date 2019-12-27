@@ -9,32 +9,35 @@ export default class Boid
         this._acceleration = new Vector(0,0);
         this._velocity = new Vector(0,0);
         this._mass = mass;
-        this._size = 5*this.mass;
+        this._size = 10*this.mass;
+        this._maxSpeed = 1/this.mass;
+        this._maxSteer = 0.025/this.mass;
 
         this._shape = {
             CIRCLE : "circle",
             SQUARE : "square",
-            TRIANGLE : "triangle"
+            TRIANGLE : "triangle",
+            RECTANGLE : "rectangle"
         }
     }
 
-    render(ctx, shape=this.shape.CIRCLE, colour="white", fill=false)
+    render(ctx, shape=this.shape.TRIANGLE, colour="white", fill=false)
     {
         (fill) ? ctx.fillStyle = colour : ctx.strokeStyle = colour;
         ctx.save();
-        Tools.rotate(ctx, this, Math.atan2(this.velocity.y,this.velocity.x))
+        Tools.rotate(ctx, this, Math.atan2(this.heading.y,this.heading.x))
         if(shape===this.shape.CIRCLE)
         {
             ctx.beginPath();
-            ctx.arc(this.position.x, this.position.y, 5*this.mass, 0, 2*Math.PI);
+            ctx.arc(this.position.x, this.position.y, this.size, 0, 2*Math.PI);
             (fill) ? ctx.fill() : ctx.stroke();
         }
-        if(shape===this.shape.SQUARE)
+        else if(shape===this.shape.SQUARE)
         {
-            (fill) ? ctx.fillRect(this.position.x, this.position.y, 5*this.mass, 5*this.mass) :
-                    ctx.strokeRect(this.position.x, this.position.y, 5*this.mass, 5*this.mass);
+            (fill) ? ctx.fillRect(this.position.x, this.position.y, this.size, this.size) :
+                    ctx.strokeRect(this.position.x, this.position.y, this.size, this.size);
         }
-        if(shape===this.shape.TRIANGLE)
+        else if(shape===this.shape.TRIANGLE)
         {
             ctx.beginPath();
             ctx.moveTo(this.position.x + 4*this.size, this.position.y + this.size/2);
@@ -44,6 +47,12 @@ export default class Boid
             ctx.closePath();
             (fill) ? ctx.fill() : ctx.stroke();
         }
+        
+        else if(shape===this.shape.RECTANGLE)
+        {
+            (fill) ? ctx.fillRect(this.position.x, this.position.y, 2*this.size, this.size) :
+                ctx.strokeRect(this.position.x, this.position.y, 2*this.size, this.size);
+        }
 
         ctx.restore();
     }
@@ -51,13 +60,51 @@ export default class Boid
     update()
     {
         this.velocity.add(this.acceleration);
-        this.position.add(this.velocity);
+        this.velocity.limit(this.maxSpeed);
+        this.position.add(Vector.VecScale(this.velocity, 1/this.mass));
         this.acceleration.scale(0);
+    }
+
+    seek(target)
+    {
+        if(target.x != null && target.y != null)
+        {
+            let desired = Vector.VecSub(target, this.position),
+                distance = desired.mag;
+                desired.normalise();
+            if(distance>100)
+            {
+                desired.scale(this.maxSpeed);
+            }
+            else
+            {
+                desired.scale(distance*0.02);
+            }
+
+            let steerForce = Vector.VecSub(desired, this.velocity);
+            steerForce.limit(this.maxSteer);
+            this.addForce(steerForce);
+        }
+    }
+
+    addForce(f)
+    {
+        this.acceleration.add(f);
     }
 
     get heading()
     {
         return Vector.VecNormalised(this.velocity);
+    }
+
+    get maxSpeed()
+    {
+        return this._maxSpeed;
+    }
+
+    get maxSteer()
+    {
+        return this._maxSteer;
     }
 
     get mass()
