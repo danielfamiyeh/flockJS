@@ -45,7 +45,7 @@ function update()
 
         let norm = Vector.VecGetNormalPoint(p1.start, p1.end,b.predictedPos),
             dist = Vector.VecDist(b.predictedPos, norm);
-        if(dist>5*p1.radius)
+        if(dist>10*p1.radius)
         {
             b.seek(norm);
         }
