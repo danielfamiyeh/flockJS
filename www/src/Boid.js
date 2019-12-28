@@ -91,14 +91,14 @@ export default class Boid
                 steer.limit(this.maxSteer);
                 this.addForce(steer);
         }
-        if(this.position.y < 100)
+        if(this.position.y < 8*this.size)
         {
             let targetVec = new Vector(this.velocity.x, this.maxSpeed),
                 steer = Vector.VecSub(targetVec, this.velocity);
                 steer.limit(this.maxSteer);
                 this.addForce(steer);
         }
-        if((HEIGHT-this.position.y) < 4*this.size)
+        if((HEIGHT-this.position.y) < 8*this.size)
         { 
             let targetVec = new Vector(this.velocity.x, -this.maxSpeed),
                 steer = Vector.VecSub(targetVec, this.velocity);
@@ -156,6 +156,18 @@ export default class Boid
     {
         this.acceleration.add(f);
     }
+
+    //Getters and Setters
+    get predictedPos()
+    {
+        let pos = new Vector(this.position.x, this.position.y);
+        let dir = this.heading;
+        dir.scale(25);
+        pos.add(dir);
+
+        return pos;
+    }
+
 
     get heading()
     {

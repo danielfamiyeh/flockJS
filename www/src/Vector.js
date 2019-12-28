@@ -6,7 +6,6 @@ export default class Vector
     {
         let x = Math.random() * 2 - 1;
         let y = Math.random() * 2 - 1;
-        console.log(x);
         let newVec = new Vector(x,y);
         newVec.normalise();
         return newVec;
@@ -37,6 +36,11 @@ export default class Vector
         return Math.sqrt((v2.x - v1.x) ** 2 + (v2.y - v1.y) ** 2);
     }
 
+    static VecDist(v1, v2)
+    {
+        return Math.sqrt((v2.x-v1.x)**2 + (v2.y-v1.y)**2);
+    }
+
     static VecNormalised(v)
     {
         return new Vector((v.x/v.mag), (v.y/v.mag));
@@ -45,6 +49,16 @@ export default class Vector
     static VecPolar2Cartesian(r,theta)
     {
         return new Vector(r*Math.cos(theta), r*Math.sin(theta));
+    }
+
+    static VecGetNormalPoint(a,b,p)
+    {
+        let ap = Vector.VecSub(p,a);
+        let ab = Vector.VecSub(b,a);
+        ab.normalise();
+        ab.scale(Vector.VecDot(ap,ab));
+        let normal = Vector.VecAdd(a,ab);
+        return normal;
     }
 
     constructor(x,y)
