@@ -10,5 +10,5 @@ _A boid simulator written in ES6._
 - [x] Fleeing
 - [x] Path Following (Basic)
 - [x] Separation
-- [ ] Alignment
+- [x] Alignment
 - [ ] Cohesion

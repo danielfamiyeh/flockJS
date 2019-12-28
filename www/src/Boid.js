@@ -10,7 +10,7 @@ export default class Boid
         this._velocity = new Vector(0,0);
         this._mass = mass;
         this._size = 10*this.mass;
-        this._maxSpeed = 1/this.mass;
+        this._maxSpeed = 0.5/this.mass;
         this._maxSteer = 0.025/this.mass;
 
         this._shape = {
@@ -188,23 +188,66 @@ export default class Boid
         }
     }
 
-    applyBehaviours(boidArr, target=new Vector(null,null))
+    cohesion(boidArr)
+    {
+
+    }
+
+    align(boidArr)
+    {
+        var sumVec = new Vector(0,0),
+            count = 0;
+        
+        for(let i=0; i<boidArr.length; i++)
+        {
+            let dist = this.position.dist(boidArr[i].position);
+            if(dist >0 && dist < 20*this.size)
+            {
+                sumVec.add(boidArr[i].velocity);
+                count++;
+            }
+        }
+        if(count > 0)
+        {
+            sumVec.scale(1/count);
+            let steer = Vector.VecSub(sumVec, this.velocity);
+            steer.limit(this.maxSteer);
+            return steer;
+        }
+    }
+
+    flock(boidArr, target=new Vector(null,null))
     {
         
         
-        let separation = this.separate(boidArr);
+        let separation = this.separate(boidArr),
+            cohesion = this.cohesion(boidArr),
+            alignment = this.align(boidArr),
+            seeking = this.seek(target);
+            
         if(separation != undefined)
         {
-            separation.scale(1.5);
+            separation.scale(1);
             this.addForce(separation);
         }
         
-        let seeking = this.seek(target);
         if(seeking != undefined)
         {
             seeking.scale(0.5);
             this.addForce(seeking);
         }
+
+       if(cohesion != undefined)
+       {
+            cohesion.scale(0.5);
+            this.addForce(cohesion);
+       }
+
+       if(alignment != undefined)
+       {
+            alignment.scale(0.5);
+            this.addForce(alignment);
+       }
     }
 
     //Getters and Setters

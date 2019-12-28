@@ -23,15 +23,19 @@ let shapeArr = [shapes.CIRCLE, shapes.SQUARE, shapes.TRIANGLE, shapes.RECTANGLE]
     target = new Vector(null, null),
     boidArr = [];
 
-document.addEventListener("click", function(e){
+canvas.addEventListener("mousedown", function(e){
    target = new Vector(e.clientX, e.clientY);
 });
 
+canvas.addEventListener("mouseup", function(e){
+    target = new Vector(null, null);
+ });
+
 let p1 = new Path(new Vector(0,100), new Vector(WIDTH,400));
 
-for(let i=0; i<100; i++)
+for(let i=0; i<120; i++)
 {
-    let mass = Math.random() * 0.25 + 0.2,
+    let mass = Math.random() * 0.2 + 0.15,
         x = Math.random() * WIDTH,
         y = Math.random() * HEIGHT;
     boidArr.push(new Boid(x,y,mass));
@@ -39,7 +43,7 @@ for(let i=0; i<100; i++)
 
 function render()
 {
-    ctx.clearRect(0,0,WIDTH,HEIGHT);
+    if(count % 1 === 0) ctx.clearRect(0,0,WIDTH,HEIGHT);
   //  p1.render(ctx);
     boidArr.forEach(b => b.render(ctx));
 }
@@ -58,7 +62,7 @@ function update()
         {
            // b.seek(norm);
         }
-        b.applyBehaviours(boidArr, target);
+        b.flock(boidArr, target);
         b.stayWithinWalls(WIDTH,HEIGHT);
         b.update();
     });
