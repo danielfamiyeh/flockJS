@@ -1,7 +1,7 @@
 # FlockJS
 _A boid simulator written in ES6._
 
-![progress](progress.gif)
+![progress](progress.gif) ![moreProgress](boids2.gif)
 
 ## Features
 - [x] Spawn on Click
@@ -11,4 +11,4 @@ _A boid simulator written in ES6._
 - [x] Path Following (Basic)
 - [x] Separation
 - [x] Alignment
-- [ ] Cohesion
+- [x] Cohesion

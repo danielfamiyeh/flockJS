@@ -190,7 +190,28 @@ export default class Boid
 
     cohesion(boidArr)
     {
+        var avgPos = new Vector(0,0),
+            count = 0;
+        
+        for(let i=0; i<boidArr.length; i++)
+        {
+            let dist = this.position.dist(boidArr[i].position);
+            if(dist > 0 && dist < 20*this.size)
+            {
+                avgPos.add(boidArr[i].position);
+                count++;
+            }
 
+            if(count>0)
+            {
+                avgPos.scale(1/count);
+                return this.seek(avgPos);
+            }
+            else
+            {
+                return avgPos;
+            }
+        }
     }
 
     align(boidArr)
@@ -237,17 +258,17 @@ export default class Boid
             this.addForce(seeking);
         }
 
-       if(cohesion != undefined)
+        if(cohesion != undefined)
        {
-            cohesion.scale(0.5);
+            cohesion.scale(0.2);
             this.addForce(cohesion);
-       }
+        }
 
-       if(alignment != undefined)
+        if(alignment != undefined)
        {
             alignment.scale(0.5);
             this.addForce(alignment);
-       }
+        }
     }
 
     //Getters and Setters
