@@ -20,18 +20,27 @@ let shapes = {
 
 let shapeArr = [shapes.CIRCLE, shapes.SQUARE, shapes.TRIANGLE, shapes.RECTANGLE],
     count = 0,
+    target = new Vector(null, null),
     boidArr = [];
 
 document.addEventListener("click", function(e){
-    boidArr.push(new Boid(e.clientX, e.clientY,0.3));
+   target = new Vector(e.clientX, e.clientY);
 });
 
 let p1 = new Path(new Vector(0,100), new Vector(WIDTH,400));
 
+for(let i=0; i<100; i++)
+{
+    let mass = Math.random() * 0.25 + 0.2,
+        x = Math.random() * WIDTH,
+        y = Math.random() * HEIGHT;
+    boidArr.push(new Boid(x,y,mass));
+}
+
 function render()
 {
     ctx.clearRect(0,0,WIDTH,HEIGHT);
-    p1.render(ctx);
+  //  p1.render(ctx);
     boidArr.forEach(b => b.render(ctx));
 }
 
@@ -40,15 +49,16 @@ function update()
     boidArr.forEach(b => {
         if(count % 100 === 0)
         {
-            b.wander();
+          //  b.wander();
         }
 
         let norm = Vector.VecGetNormalPoint(p1.start, p1.end,b.predictedPos),
             dist = Vector.VecDist(b.predictedPos, norm);
         if(dist>10*p1.radius)
         {
-            b.seek(norm);
+           // b.seek(norm);
         }
+        b.applyBehaviours(boidArr, target);
         b.stayWithinWalls(WIDTH,HEIGHT);
         b.update();
     });

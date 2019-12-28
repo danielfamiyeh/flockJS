@@ -125,7 +125,8 @@ export default class Boid
 
             let steerForce = Vector.VecSub(desired, this.velocity);
             steerForce.limit(this.maxSteer);
-            this.addForce(steerForce);
+            return steerForce;
+           // this.addForce(steerForce);
         }
     }
     
@@ -155,6 +156,55 @@ export default class Boid
     addForce(f)
     {
         this.acceleration.add(f);
+    }
+
+    separate(boidArr)
+    { 
+        var count = 0,
+            sumVec = new Vector(0,0);
+        for(let i=0; i<boidArr.length; i++)
+        {
+            let dist = Vector.VecDist(this.position, boidArr[i].position);
+            if(dist > 0 && dist < 6*this.size)
+            {
+                count++;
+                let vecAway = Vector.VecSub(this.position, boidArr[i].position);
+                vecAway.normalise();
+                vecAway.scale(1/dist);
+                sumVec.add(vecAway);
+            }
+        }
+
+        if(count > 0)
+        {
+            sumVec.scale(1/count);
+            sumVec.normalise();
+            sumVec.scale(this.maxSpeed);
+
+            var steerVec = Vector.VecSub(sumVec, this.velocity);
+            steerVec.limit(this.maxSteer);
+            return steerVec;
+           // this.addForce(steerVec);
+        }
+    }
+
+    applyBehaviours(boidArr, target=new Vector(null,null))
+    {
+        
+        
+        let separation = this.separate(boidArr);
+        if(separation != undefined)
+        {
+            separation.scale(1.5);
+            this.addForce(separation);
+        }
+        
+        let seeking = this.seek(target);
+        if(seeking != undefined)
+        {
+            seeking.scale(0.5);
+            this.addForce(seeking);
+        }
     }
 
     //Getters and Setters

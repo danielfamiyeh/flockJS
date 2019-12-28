@@ -116,6 +116,12 @@ export default class Vector
         this.y *= lambda;
     }
 
+    applyBehaviours(boidArr, target=new Vector(null,null))
+    {
+        this.separate(boidArr);
+        this.seek(target);
+    }
+
     //Getters and Setters
     get x()
     {
